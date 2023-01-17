@@ -26,37 +26,99 @@ variables (P Q R S : Prop)
 
 example : P ↔ P :=
 begin
-  sorry
+  refl,
+end
+
+example : P ↔ P :=
+begin
+  exact iff.rfl, -- this is what the above has found
+end
+
+example : P ↔ P :=
+begin
+  split,
+  { exact id, }, -- identity function
+  { intro hP,
+    exact hP, },
 end
 
 example : (P ↔ Q) → (Q ↔ P) :=
 begin
-  sorry
+  intro hPQ,
+  cases hPQ with hPQ hQP,
+  split,
+  exact hQP,
+  exact hPQ,
 end
 
+example : (P ↔ Q) → (Q ↔ P) :=
+begin
+  intro hPQ,
+  cases hPQ with hPQ hQP,
+  split; -- do exactly the same to both goals.
+  assumption,
+end
+
+example : (P ↔ Q) → (Q ↔ P) :=
+begin
+  intro hPQ,
+  rw hPQ,
+end
+
+example : (P ↔ Q) → (Q ↔ P) :=
+begin
+  rintro ⟨hPQ, hQP⟩, --intro then cases
+  exact ⟨hQP, hPQ⟩,
+end
+
+-- very intriguing... why does this work? rw has something to 
+-- close goals in it
 example : (P ↔ Q) ↔ (Q ↔ P) :=
 begin
-  sorry
+  split,
+  intro hPQ,
+  rw hPQ,
+  intro hQP,
+  rw hQP, 
 end
 
 example : (P ↔ Q) → (Q ↔ R) → (P ↔ R) :=
 begin
-  sorry
+  intros hPQ hQR,
+  rw [hPQ, hQR], -- how cute
 end
 
 example : P ∧ Q ↔ Q ∧ P :=
 begin
-  sorry
+  split,
+  rintro ⟨hP, hQ⟩,
+  exact ⟨hQ, hP⟩,
+  rintro ⟨hQ, hP⟩,
+  exact ⟨hP, hQ⟩,
+end
+
+example : P ∧ Q ↔ Q ∧ P :=
+begin
+  split;
+  exact (λ hPQ, ⟨hPQ.right, hPQ.left⟩)
 end
 
 example : ((P ∧ Q) ∧ R) ↔ (P ∧ (Q ∧ R)) :=
 begin
-  sorry
+  split,
+  { rintro ⟨⟨hP, hQ⟩, hR⟩,
+    exact ⟨hP, hQ, hR⟩, },
+  { rintro ⟨hP, hQ, hR⟩,
+    exact ⟨⟨hP, hQ⟩, hR⟩, },
 end
 
 example : P ↔ (P ∧ true) :=
 begin
-  sorry
+  split,
+  { intro hP, 
+    exact ⟨hP, true.intro⟩ },
+  { rintro ⟨hP, _⟩,
+    exact hP, }, 
 end
 
 example : false ↔ (P ∧ false) :=

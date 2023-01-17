@@ -36,55 +36,87 @@ variables (P Q R : Prop)
 
 example : ¬ true → false :=
 begin
-  sorry
+  intro hT,
+  apply hT,
+  triv,
+end
+
+-- using the proof of true
+example : ¬ true → false :=
+begin
+  intro hT,
+  exact hT true.intro,
 end
 
 example : false → ¬ true :=
 begin
-  sorry
+  intros hF _,
+  exact hF,
 end
 
 example : ¬ false → true :=
 begin
-  sorry
+  intro _,
+  triv,
 end
 
 example : true → ¬ false :=
 begin
-  sorry
+  intros _ hF,
+  exact hF,
 end
 
 example : false → ¬ P :=
 begin
-  sorry
+  intros hF _,
+  exact hF,
 end
 
 example : P → ¬ P → false :=
 begin
-  sorry
+  intros hP hNP,
+  exact hNP hP,
 end
 
 example : P → ¬ (¬ P) :=
 begin
-  sorry
+  intros hP hPF,
+  exact hPF hP,
 end
 
 example : (P → Q) → (¬ Q → ¬ P) :=
 begin
-  sorry
+  intros hPQ hQF hP,
+  exact hQF (hPQ hP),
 end
 
+-- TODO: what the what kinda proof is this
 example : ¬ ¬ false → false :=
 begin
-  sorry
+  intro hF,
+  apply hF,
+  intro hF1,
+  exact hF1,
 end
 
 example : ¬ ¬ P → P :=
 begin
-  sorry
+  intro hPFF,
+  by_contra,
+  exact hPFF h,
+end
+
+-- using the proof above
+example : ¬ ¬ false → false :=
+begin
+  intro hF,
+  by_contra,
+  exact hF h,
 end
 
 example : (¬ Q → ¬ P) → (P → Q) :=
 begin
-  sorry,
+  intros hNQP hP,
+  by_contra hQ,
+  exact hNQP hQ hP,
 end

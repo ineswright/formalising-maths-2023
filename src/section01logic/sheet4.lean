@@ -28,49 +28,111 @@ variables (P Q R : Prop)
 
 example : P ∧ Q → P :=
 begin
-  sorry
+  intro hPQ,
+  exact hPQ.left,
+end
+
+example : P ∧ Q → P :=
+begin
+  rintro ⟨hP, hQ⟩,
+  exact hP,
+end
+
+-- Alternative solution
+example : P ∧ Q → P :=
+begin
+  intro hPQ,
+  cases hPQ with hP _,
+  exact hP,
 end
 
 example : P ∧ Q → Q :=
 begin
-  sorry
+  intro hPQ,
+  cases hPQ with _ hQ,
+  exact hQ,
 end
 
 example : (P → Q → R) → (P ∧ Q → R) :=
 begin
-  sorry
+  intros hPQR hPQ,
+  exact hPQR hPQ.left hPQ.right,
 end
 
 example : P → Q → P ∧ Q :=
 begin
-  sorry
+  intros hP hQ,
+  exact ⟨hP, hQ⟩,
+end
+
+example : P → Q → P ∧ Q :=
+begin
+  intros hP hQ,
+  split,
+  exact hP, -- DON'T DO THIS! Will dock marks. After split, put each goal in { } or exacts if it's this simple
+  exact hQ,
 end
 
 /-- `∧` is symmetric -/
 example : P ∧ Q → Q ∧ P :=
 begin
-  sorry
+  intro hPQ,
+  exact ⟨hPQ.right, hPQ.left⟩,
+end
+
+example : P ∧ Q → Q ∧ P :=
+begin
+  rintro ⟨hP, hQ⟩,
+  split,
+  exacts [hQ, hP],
 end
 
 example : P → P ∧ true :=
 begin
-  sorry
+  intro hP,
+  split, -- gross
+  exact hP,
+  triv,
 end
+
+example : P → P ∧ true :=
+begin
+  intro hP,
+  exact ⟨hP, true.intro⟩,
+end
+
+example : P → P ∧ true :=
+λ hP, ⟨hP, true.intro⟩ -- yum
 
 example : false → P ∧ false :=
 begin
-  sorry
+  intro hF,
+  split,
+  exfalso,
+  exacts [hF, hF],
+end
+
+-- TODO: improve this
+example : false → P ∧ false :=
+begin
+  intro hF,
+  split, -- how do I do the thing where you solve part of a goal
+  exfalso, -- and then the rest becomes the rest of the goal?
+  { exact hF, }, 
+  { exact hF, },
 end
 
 /-- `∧` is transitive -/
 example : (P ∧ Q) → (Q ∧ R) → (P ∧ R) :=
 begin
-  sorry,
+  intros hPQ hQR,
+  exact ⟨hPQ.left, hQR.right⟩,
 end
 
 example : ((P ∧ Q) → R) → (P → Q → R) :=
 begin
-  sorry,
+  intros hPQR hP hQ,
+  exact hPQR ⟨hP, hQ⟩,
 end
 
 

@@ -98,7 +98,13 @@ using `intro`, `exact` and `apply`.
 /-- Every proposition implies itself. -/
 example : P → P :=
 begin
-  sorry
+  intro hP,
+  exact hP,
+end
+
+example : P → P :=
+begin
+  tauto, -- tauto doesn't use law of the excluded middle. tauto! does.
 end
 
 /-
@@ -118,28 +124,38 @@ So the next level is asking you prove that `P → (Q → P)`.
 -/
 example : P → Q → P :=
 begin
-  sorry
+  intro hP,
+  intro hQ,
+  exact hP,
 end
 
 /-- If we know `P`, and we also know `P → Q`, we can deduce `Q`. 
 This is called "Modus Ponens" by logicians. -/
 example : P → (P → Q) → Q :=
 begin
-  sorry
+  intro hP,
+  intro hPQ,
+  exact hPQ hP,
 end
 
 /-- `→` is transitive. That is, if `P → Q` and `Q → R` are true, then
   so is `P → R`. -/
 example : (P → Q) → (Q → R) → (P → R) :=
 begin
-  sorry,
+  intros hPQ hQR hP,
+  exact hQR (hPQ hP),
 end
+
+-- not tactic mode!
+example : (P → Q) → (Q → R) → (P → R) :=
+λ hPQ hQR hP, hQR (hPQ hP)
 
 -- If `h : P → Q → R` with goal `⊢ R` and you `apply h`, you'll get
 -- two goals! Note that tactics operate on only the first goal.
 example : (P → Q → R) → (P → Q) → (P → R) :=
 begin
-  sorry
+  intros hPQR hPQ hP,
+  exact hPQR hP (hPQ hP),
 end
 
 /- 
@@ -155,9 +171,7 @@ in this section, where you'll learn some more tactics.
 variables (S T : Prop)
 
 example : (P → R) → (S → Q) → (R → T) → (Q → R) → S → T :=
-begin
-  sorry
-end
+λ _ hSQ hRT hQR hS, hRT (hQR (hSQ hS))
 
 example : (P → Q) → ((P → Q) → P) → Q :=
 begin

@@ -28,17 +28,24 @@ variables (P Q R S : Prop)
 
 example : P → P ∨ Q :=
 begin
-  sorry
+  intro hP,
+  left,
+  exact hP,
 end
 
 example : Q → P ∨ Q :=
 begin
-  sorry,
+  intro hQ,
+  right,
+  exact hQ,
 end
 
 example : P ∨ Q → (P → R) → (Q → R) → R :=
 begin
-  sorry
+  intros hPQ hPR hQR,
+  cases hPQ with hP hQ,
+  exact hPR hP,
+  exact hQR hQ,
 end
 
 -- symmetry of `or`
