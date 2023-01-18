@@ -12,7 +12,16 @@ import solutions.section02reals.sheet3 -- import the definition of `tends_to` fr
 theorem tends_to_neg {a : ℕ → ℝ} {t : ℝ} (ha : tends_to a t) :
   tends_to (λ n, - a n) (-t) :=
 begin
-  sorry,
+  rw tends_to at *,
+  intros ε hε,
+  specialize ha ε hε, -- try to do linear rewriting?
+  cases ha with B ha,
+  use B,
+  intros n hB,
+  specialize ha n hB,
+  rw [←abs_neg] at ha,
+  rw ←neg_add',
+  exact ha,
 end
 
 /-
@@ -32,7 +41,20 @@ theorem tends_to_add {a b : ℕ → ℝ} {t u : ℝ}
   (ha : tends_to a t) (hb : tends_to b u) :
   tends_to (λ n, a n + b n) (t + u) :=
 begin
-  sorry
+  rw tends_to at *,
+  intros e he,
+  specialize ha (e/2) (half_pos he),
+  specialize hb (e/2) (half_pos he),
+  cases ha with k ha,
+  cases hb with j hb,
+  use (max k j),
+  intros n hn,
+  specialize ha n (le_of_max_le_left hn),
+  specialize hb n (le_of_max_le_right hn),
+  have h3 : a n - t + (b n - u) = a n + b n - (t + u), -- how to get rid of this?
+  { ring, },
+  rw [←h3, ←(add_halves e)],
+  exact lt_of_le_of_lt (abs_add (a n - t) (b n - u)) (add_lt_add ha hb),
 end
 
 /-- If `a(n)` tends to t and `b(n)` tends to `u` then `a(n) - b(n)`
@@ -41,7 +63,6 @@ theorem tends_to_sub {a b : ℕ → ℝ} {t u : ℝ}
   (ha : tends_to a t) (hb : tends_to b u) :
   tends_to (λ n, a n - b n) (t - u) :=
 begin
-  -- this one follows without too much trouble from earlier results.
-  sorry
+  exact tends_to_add ha (tends_to_neg hb),
 end
 

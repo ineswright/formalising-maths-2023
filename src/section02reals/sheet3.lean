@@ -84,13 +84,34 @@ but it can't do anything with it if it's a variable.
 /-- The limit of the constant sequence with value 37 is 37. -/
 theorem tends_to_thirtyseven : tends_to (λ n, 37) 37 :=
 begin
-  sorry,
+  rw tends_to,
+  intros e hE,
+  use 0,
+  intros n hn,
+  norm_num,
+  exact hE,
 end
 
 /-- The limit of the constant sequence with value `c` is `c`. -/
 theorem tends_to_const (c : ℝ) : tends_to (λ n, c) c :=
 begin
-  sorry,
+  intros e hE,
+  dsimp only, -- deals with the λ
+  use 0,
+  intros n hn,
+  norm_num,
+  exact hE,
+end
+
+/-- The limit of the constant sequence with value `c` is `c`. -/
+theorem tends_to_const2 (c : ℝ) : tends_to (λ n, c) c :=
+begin
+  rw tends_to_def,
+  intros e hE,
+  use 1,
+  intros n hn,
+  simp only [abs_zero, sub_self],
+  exact hE,
 end
 
 /-- If `a(n)` tends to `t` then `a(n) + c` tends to `t + c` -/
@@ -98,13 +119,31 @@ theorem tends_to_add_const {a : ℕ → ℝ} {t : ℝ} (c : ℝ)
   (h : tends_to a t) :
   tends_to (λ n, a n + c) (t + c) :=
 begin
-  sorry,
+  rw tends_to at *,
+  intros e hE,
+  specialize h e hE,
+  norm_num,
+  exact h,
   -- hints: make sure you know the maths proof!
   -- use `cases` to deconstruct an `exists`
   -- hypothesis, and `specialize` to specialize
   -- a `forall` hypothesis to specific values.
   -- Look up the explanations of these tactics in Part C
   -- of the course notes. 
+  -- cases h with k h,
+end
+
+/-- If `a(n)` tends to `t` then `a(n) + c` tends to `t + c` -/
+theorem tends_to_add_const2 {a : ℕ → ℝ} {t : ℝ} (c : ℝ)
+  (h : tends_to a t) :
+  tends_to (λ n, a n + c) (t + c) :=
+begin
+  rw tends_to at *,
+  intros e hE,
+  cases (h e hE) with k h,
+  use k,
+  norm_num,
+  exact h,
 end
 
 -- you're not quite ready for this one yet though.

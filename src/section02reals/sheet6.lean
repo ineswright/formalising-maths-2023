@@ -31,7 +31,14 @@ Good luck!
 theorem tends_to_thirtyseven_mul (a : ℕ → ℝ) (t : ℝ) (h : tends_to a t) :
   tends_to (λ n, 37 * a n) (37 * t) :=
 begin
-  sorry,
+  have : (0 : ℝ) < 37 := begin norm_num end, -- what is the nice way to switch to tactic mode?
+  rw tends_to at *,
+  intros ε hε,
+  cases (h (ε/37) (div_pos hε this)) with k h,
+  use k,
+  intros n hn,
+  rw [(mul_sub 37 (a n) t).symm, abs_mul, abs_of_pos this],
+  exact (lt_div_iff' this).mp (h n hn),
 end
 
 /-- If `a(n)` tends to `t` and `c` is a positive constant then
@@ -39,7 +46,13 @@ end
 theorem tends_to_pos_const_mul {a : ℕ → ℝ} {t : ℝ} (h : tends_to a t)
   {c : ℝ} (hc : 0 < c) : tends_to (λ n, c * a n) (c * t) :=
 begin
-  sorry,
+  rw tends_to at *,
+  intros ε hε,
+  cases (h (ε/c) (div_pos hε hc)) with k h,
+  use k,
+  intros n hn,
+  rw [(mul_sub c (a n) t).symm, abs_mul, abs_of_pos hc, ←(lt_div_iff' hc)],
+  exact h n hn,
 end
 
 /-- If `a(n)` tends to `t` and `c` is a negative constant then
@@ -47,7 +60,14 @@ end
 theorem tends_to_neg_const_mul {a : ℕ → ℝ} {t : ℝ} (h : tends_to a t)
   {c : ℝ} (hc : c < 0) : tends_to (λ n, c * a n) (c * t) :=
 begin
-  sorry,
+  rw tends_to at *,
+  intros ε hε,
+  cases (h (- ε / c) (div_pos_of_neg_of_neg (neg_lt_zero.mpr hε) hc)) with k h,
+  use k,
+  intros n hn,
+  rw [(mul_sub c (a n) t).symm, abs_mul, ←(lt_div_iff' (abs_pos_of_neg hc))],
+  rw [(abs_of_neg hc), div_neg, ←neg_div],
+  exact h n hn,
 end
 
 /-- If `a(n)` tends to `t` and `c` is a constant then `c * a(n)` tends
