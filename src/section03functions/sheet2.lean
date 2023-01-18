@@ -59,9 +59,12 @@ open X
 
 example (x : X) : x = a ∨ x = b ∨ x = c :=
 begin
+  cases x,
+  { exact or.inl rfl, },
+  { exact or.inr (or.inl rfl), },
   -- start with `cases x`; you should get three goals,
   -- which you should then put in `{ }` brackets.
-  sorry
+  exact or.inr (or.inr rfl),
 end
 
 -- How does Lean know that `a` and `b` are *distinct* elements of `X`? If you

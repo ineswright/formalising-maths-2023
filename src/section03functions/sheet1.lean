@@ -83,15 +83,19 @@ end
 
 example : injective (id : X → X) :=
 begin
+  intros a b,
+  rw [id_eval, id_eval],
+  exact id,
   -- you can start with `rw injective_def` if you like,
   -- and later you can `rw id_eval`, although remember that `rw` doesn't
   -- work under binders like `∀`, so use `intro` first.
-  sorry
 end
 
 example : surjective (id : X → X) :=
 begin
-  sorry
+  intro b,
+  use b,
+  exact (id_eval _ b),
 end
 
 -- Theorem: if f : X → Y and g : Y → Z are injective,
@@ -147,12 +151,22 @@ end
 example (f : X → Y) (g : Y → Z) : 
   injective (g ∘ f) → injective f :=
 begin
-  sorry
+  rw [injective_def, injective_def],
+  intros heq a b hf,
+  specialize heq a b,
+  apply heq,
+  rw comp, -- this looks nasty. Is there something better?
+  dsimp only,
+  rw hf,
 end
 
 -- This is another one
 example (f : X → Y) (g : Y → Z) : 
   surjective (g ∘ f) → surjective g :=
 begin
-  sorry
+  rw [surjective, surjective],
+  intros h b,
+  cases (h b) with a h2,
+  use f a,
+  exact h2,
 end
