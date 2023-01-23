@@ -8,6 +8,10 @@ import tactic -- imports all the Lean tactics
 import data.real.basic -- imports the real numbers
 import solutions.section02reals.sheet3 -- import the definition of `tends_to` from a previous sheet
 
+-- to get a proof from a type class
+-- apply_instance tactic should figure it out 
+-- so can write have : linear_order ℝ := {apply_instance,},
+
 -- you can maybe do this one now
 theorem tends_to_neg {a : ℕ → ℝ} {t : ℝ} (ha : tends_to a t) :
   tends_to (λ n, - a n) (-t) :=
@@ -19,6 +23,7 @@ begin
   use B,
   intros n hB,
   specialize ha n hB,
+  -- or simp, rw abs_sub_comm, exact ha, 
   rw [←abs_neg] at ha,
   rw ←neg_add',
   exact ha,
@@ -56,6 +61,8 @@ begin
   rw [←h3, ←(add_halves e)],
   exact lt_of_le_of_lt (abs_add (a n - t) (b n - u)) (add_lt_add ha hb),
 end
+
+-- what is simp_rw -- rw but deeper
 
 /-- If `a(n)` tends to t and `b(n)` tends to `u` then `a(n) - b(n)`
 tends to `t - u`. -/
